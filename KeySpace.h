@@ -44,6 +44,9 @@ struct KeySpace {
             current = current->next;
             delete old_node;
         }
+        if (next != nullptr) {
+            delete next;
+        }
     }
 };
 
@@ -90,7 +93,7 @@ public:
             throw invalid_argument("Invalid key");
         }
 
-        if ((float)csize / msize > 0.75) {
+        if ((float)csize / msize > 0.5) {
             Resize();
         }
 
@@ -107,11 +110,9 @@ public:
                     node = node->next;
                 }
 
-                int new_release;
+                int new_release = 1;
                 if (current -> node != nullptr) {
                     new_release = current -> node -> release + 1;
-                } else {
-                    new_release = 1;
                 }
 
                 Node<T>* newNode = new Node<T>(new_release, item, current->node);
@@ -224,9 +225,7 @@ public:
 
                         Node<T>* updateNode = (prevNode == nullptr) ? current->node : prevNode->next;
                         while (updateNode != nullptr) {
-                            if (updateNode -> release != 1) {
-                                updateNode->release--;
-                            }
+
                             updateNode = updateNode->next;
                         }
 
